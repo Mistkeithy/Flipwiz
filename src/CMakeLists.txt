@@ -1,6 +1,6 @@
 add_library(uilib STATIC
-    ui_lib.h
-    ui_lib.cpp
+    "ui_elements.h"
+    "ui_elements.cpp"
 )
 
 target_include_directories(uilib PUBLIC
@@ -14,3 +14,4 @@ add_executable(flipwiz
 target_link_libraries(flipwiz
     uilib
 )
+
