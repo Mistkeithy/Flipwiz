@@ -1,4 +1,5 @@
 #include "ui_elements.h"
+//#include "version.h"
 #include <iostream>
 
 int main()
@@ -8,9 +9,11 @@ int main()
 
     // Create the button
     Button myButton(hWnd, "Click me!", 50, 50, 100, 30);
+    ApplyStyle(myButton.GetHandle(), "");
 
     // Create the slider
     Slider mySlider(hWnd, 50, 100, 200, 30, 0, 100);
+    ApplyStyle(mySlider.GetHandle(), "");
 
     // Message processor
     MSG msg;

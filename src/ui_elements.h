@@ -3,6 +3,8 @@
 
 #include <windows.h>
 #include <string>
+#include <uxtheme.h>
+#pragma comment(lib, "uxtheme.lib")
 
 HWND CreateAppWindow(HINSTANCE hInstance, int nCmdShow, const char* windowTitle, WNDPROC wndProc);
 LRESULT CALLBACK DefaultWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

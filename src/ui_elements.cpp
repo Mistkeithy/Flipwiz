@@ -107,5 +107,11 @@ HWND Slider::GetHandle() const {
 /// <param name="hWnd"></param>
 /// <param name="styleName"></param>
 void ApplyStyle(HWND hWnd, const std::string& styleName) {
-    // insert styles here
+    if (styleName.empty()) {
+        // current aero theme
+        SetWindowTheme(hWnd, L" ", L" ");
+    }
+    else {
+        // other styles
+    }
 }

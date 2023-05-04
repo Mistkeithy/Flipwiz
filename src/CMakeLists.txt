@@ -15,3 +15,6 @@ target_link_libraries(flipwiz
     uilib
 )
 
+add_link_options("/MANIFESTUAC:\"level='asInvoker' uiAccess='false'\" /MANIFEST:EMBED,ID=1 /manifest:file:${CMAKE_CURRENT_BINARY_DIR}/../application.manifest")
+
+target_sources(flipwiz PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../application.manifest")

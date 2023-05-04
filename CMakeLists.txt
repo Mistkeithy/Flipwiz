@@ -18,3 +18,6 @@ add_subdirectory(src)
 #if (BUILD_DOCS)
 #    add_subdirectory(docs)
 #endif()
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/application.manifest
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
