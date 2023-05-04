@@ -1,21 +1,23 @@
-﻿# CMakeList.txt: проект CMake для FlipWiz; включите исходный код и определения,
-# укажите здесь логику для конкретного проекта.
-#
-cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required(VERSION 3.8)
 
-# Enable Hot Reload for MSVC compilers if supported.
-if (POLICY CMP0141)
-  cmake_policy(SET CMP0141 NEW)
-  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
-endif()
+project(flipwiz)
 
-project ("FlipWiz")
+set(CMAKE_CXX_STANDARD 17)
 
-# Добавьте источник в исполняемый файл этого проекта.
-add_executable (FlipWiz "FlipWiz.cpp" "FlipWiz.h")
+# source code of application
+add_subdirectory(src)
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET FlipWiz PROPERTY CXX_STANDARD 20)
-endif()
+# tests
+#option(BUILD_TESTS "Build unit tests" ON)
+#if (BUILD_TESTS)
+#    add_subdirectory(tests)
+#endif()
 
-# TODO: Добавьте тесты и целевые объекты, если это необходимо.
+# docs
+#option(BUILD_DOCS "Build documentation" OFF)
+#if (BUILD_DOCS)
+#    add_subdirectory(docs)
+#endif()
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/application.manifest
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
