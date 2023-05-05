@@ -1,5 +1,4 @@
 #include "ui_elements.h"
-//#include "version.h"
 #include <iostream>
 
 int main()

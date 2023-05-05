@@ -9,6 +9,7 @@ target_include_directories(uilib PUBLIC
 
 add_executable(flipwiz
     main.cpp
+    resources.rc
 )
 
 target_link_libraries(flipwiz
