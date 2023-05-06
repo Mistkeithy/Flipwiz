@@ -30,6 +30,8 @@ HWND CreateAppWindow(HINSTANCE hInstance, int nCmdShow, const char* windowTitle,
         return nullptr;
     }
 
+    DWORD windowExStyle = WS_EX_OVERLAPPEDWINDOW | WS_EX_CONTROLPARENT;
+
     HWND hWnd = CreateWindow(
         windowTitle, windowTitle,
         WS_OVERLAPPEDWINDOW,
@@ -48,18 +50,6 @@ HWND CreateAppWindow(HINSTANCE hInstance, int nCmdShow, const char* windowTitle,
     UpdateWindow(hWnd);
 
     return hWnd;
-}
-
-LRESULT CALLBACK DefaultWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    switch (message) {
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
-    default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
-    }
-    return 0;
 }
 
 /// <summary>
@@ -84,7 +74,7 @@ HWND Button::GetHandle() const {
 }
 
 /// <summary
-/// Create the silder element
+/// Silder
 /// </summary>
 /// <param name="parent"></param>
 /// <param name="x"></param>
@@ -95,7 +85,7 @@ HWND Button::GetHandle() const {
 /// <param name="maxRange"></param>
 Slider::Slider(HWND parent, int x, int y, int width, int height, int minRange, int maxRange) {
     hWnd = CreateWindow("msctls_trackbar32", nullptr,
-        WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
+        WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS | WS_TABSTOP,
         x, y, width, height,
         parent, nullptr, (HINSTANCE)GetWindowLongPtr(parent, GWLP_HINSTANCE), nullptr);
 
@@ -109,7 +99,7 @@ HWND Slider::GetHandle() const {
 
 
 /// <summary>
-/// Label class
+/// Label
 /// </summary>
 /// <param name="parent"></param>
 /// <param name="text"></param>
@@ -128,7 +118,7 @@ HWND Label::GetHandle() const {
 }
 
 /// <summary>
-/// Check box class
+/// Check box
 /// </summary>
 /// <param name="parent"></param>
 /// <param name="text"></param>
@@ -137,7 +127,7 @@ HWND Label::GetHandle() const {
 /// <param name="width"></param>
 /// <param name="height"></param>
 CheckBox::CheckBox(HWND parent, const std::string& text, int x, int y, int width, int height) {
-    hWnd = CreateWindow("BUTTON", text.c_str(), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX, 
+    hWnd = CreateWindow("BUTTON", text.c_str(), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_TABSTOP,
         x, y, width, height, parent, NULL, GetModuleHandle(NULL), NULL);
     ApplyDefaultFont(hWnd);
 }
@@ -147,7 +137,7 @@ HWND CheckBox::GetHandle() const {
 }
 
 /// <summary>
-/// Radio box class
+/// Radio box
 /// </summary>
 /// <param name="parent"></param>
 /// <param name="text"></param>
@@ -156,13 +146,72 @@ HWND CheckBox::GetHandle() const {
 /// <param name="width"></param>
 /// <param name="height"></param>
 Radio::Radio(HWND parent, const std::string& text, int x, int y, int width, int height) {
-    hWnd = CreateWindow("BUTTON", text.c_str(), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, 
+    hWnd = CreateWindow("BUTTON", text.c_str(), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_TABSTOP,
         x, y, width, height, parent, NULL, GetModuleHandle(NULL), NULL);
     ApplyDefaultFont(hWnd);
 }
 
 HWND Radio::GetHandle() const {
     return hWnd;
+}
+
+/// <summary>
+/// Scrollbar 
+/// </summary>
+/// <param name="parent"></param>
+/// <param name="isHorizontal"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+ScrollBar::ScrollBar(HWND parent, bool isHorizontal, int x, int y, int width, int height) {
+    DWORD windowStyle = WS_CHILD | WS_VISIBLE | (isHorizontal ? SBS_HORZ : SBS_VERT);
+    hWnd = CreateWindowEx(0, "SCROLLBAR", nullptr, windowStyle, x, y, width, height, parent, nullptr, GetModuleHandle(nullptr), nullptr);
+}
+
+HWND ScrollBar::GetHandle() const {
+    return hWnd;
+}
+
+/// <summary>
+/// Status bar
+/// </summary>
+/// <param name="parent"></param>
+StatusBar::StatusBar(HWND parent) {
+    hWnd = CreateWindowEx(0, STATUSCLASSNAME, nullptr, WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP, 0, 0, 0, 0, parent, nullptr, GetModuleHandle(nullptr), nullptr);
+    UpdateWindow(hWnd);
+}
+
+HWND StatusBar::GetHandle() const {
+    return hWnd;
+}
+
+void StatusBar::SetText(const std::string& text, int part) {
+    SendMessage(hWnd, SB_SETTEXT, part, (LPARAM)text.c_str());
+}
+
+/// <summary>
+/// ComboBox
+/// </summary>
+/// <param name="parent"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+/// <param name="editable"></param>
+ComboBox::ComboBox(HWND parent, int x, int y, int width, int height, bool editable, const std::string& labelText)
+    : hWnd(nullptr), label(parent, labelText, x, y - 20, width, 20) {
+    DWORD windowStyle = WS_CHILD | WS_VISIBLE | CBS_DROPDOWN | WS_TABSTOP | (editable ? 0 : CBS_DROPDOWNLIST);
+    hWnd = CreateWindowEx(0, "COMBOBOX", nullptr, windowStyle, x, y, width, height, parent, nullptr, GetModuleHandle(nullptr), nullptr);
+    ApplyDefaultFont(hWnd);
+}
+
+HWND ComboBox::GetHandle() const {
+    return hWnd;
+}
+
+void ComboBox::AddItem(const std::string& itemText) {
+    SendMessage(hWnd, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(itemText.c_str()));
 }
 
 /// <summary>
