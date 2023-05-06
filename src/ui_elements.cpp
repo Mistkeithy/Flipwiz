@@ -1,10 +1,6 @@
 #include "ui_elements.h"
 #include <commctrl.h>
 
-#include <Gdiplus.h>
-
-using namespace Gdiplus;
-
 /// <summary>
 /// Create Application Window
 /// </summary>
@@ -66,11 +62,21 @@ LRESULT CALLBACK DefaultWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     return 0;
 }
 
+/// <summary>
+/// Button
+/// </summary>
+/// <param name="parent"></param>
+/// <param name="text"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
 Button::Button(HWND parent, const std::string& text, int x, int y, int width, int height) {
     hWnd = CreateWindow("BUTTON", text.c_str(),
         WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         x, y, width, height,
         parent, nullptr, (HINSTANCE)GetWindowLongPtr(parent, GWLP_HINSTANCE), nullptr);
+    ApplyDefaultFont(hWnd);
 }
 
 HWND Button::GetHandle() const {
@@ -101,6 +107,64 @@ HWND Slider::GetHandle() const {
     return hWnd;
 }
 
+
+/// <summary>
+/// Label class
+/// </summary>
+/// <param name="parent"></param>
+/// <param name="text"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+Label::Label(HWND parent, const std::string& text, int x, int y, int width, int height) {
+    hWnd = CreateWindow("STATIC", text.c_str(), WS_CHILD | WS_VISIBLE | SS_LEFT, 
+        x, y, width, height, parent, NULL, GetModuleHandle(NULL), NULL);
+    ApplyDefaultFont(hWnd);
+}
+
+HWND Label::GetHandle() const {
+    return hWnd;
+}
+
+/// <summary>
+/// Check box class
+/// </summary>
+/// <param name="parent"></param>
+/// <param name="text"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+CheckBox::CheckBox(HWND parent, const std::string& text, int x, int y, int width, int height) {
+    hWnd = CreateWindow("BUTTON", text.c_str(), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX, 
+        x, y, width, height, parent, NULL, GetModuleHandle(NULL), NULL);
+    ApplyDefaultFont(hWnd);
+}
+
+HWND CheckBox::GetHandle() const {
+    return hWnd;
+}
+
+/// <summary>
+/// Radio box class
+/// </summary>
+/// <param name="parent"></param>
+/// <param name="text"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+Radio::Radio(HWND parent, const std::string& text, int x, int y, int width, int height) {
+    hWnd = CreateWindow("BUTTON", text.c_str(), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, 
+        x, y, width, height, parent, NULL, GetModuleHandle(NULL), NULL);
+    ApplyDefaultFont(hWnd);
+}
+
+HWND Radio::GetHandle() const {
+    return hWnd;
+}
+
 /// <summary>
 /// Style of element
 /// </summary>
@@ -109,9 +173,21 @@ HWND Slider::GetHandle() const {
 void ApplyStyle(HWND hWnd, const std::string& styleName) {
     if (styleName.empty()) {
         // current aero theme
-        SetWindowTheme(hWnd, L" ", L" ");
+        //SetWindowTheme(hWnd, L" ", L" ");
     }
     else {
         // other styles
     }
+}
+
+/// <summary>
+/// Apply Windows-style fonts
+/// </summary>
+/// <param name="hWnd"></param>
+void ApplyDefaultFont(HWND hWnd) {
+    NONCLIENTMETRICS ncm;
+    ncm.cbSize = sizeof(NONCLIENTMETRICS);
+    SystemParametersInfo(SPI_GETNONCLIENTMETRICS, ncm.cbSize, &ncm, 0);
+    HFONT hFont = CreateFontIndirect(&ncm.lfMessageFont);
+    SendMessage(hWnd, WM_SETFONT, (WPARAM)hFont, TRUE);
 }
