@@ -3,6 +3,7 @@
 
 #include <windows.h>
 #include <string>
+#include "ui_styles.h"
 
 HWND CreateAppWindow(HINSTANCE hInstance, int nCmdShow, const char* windowTitle, WNDPROC wndProc);
 
@@ -14,10 +15,6 @@ class Slider;
 class Label;
 class CheckBox;
 class Radio;
-
-// UI tweaks
-void ApplyStyle(HWND hWnd, const std::string& styleName);
-void ApplyDefaultFont(HWND hWnd);
 
 /// <summary>
 /// Button class

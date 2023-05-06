@@ -3,6 +3,8 @@ add_library(uilib STATIC
     "ui_elements.cpp"
     "ui_messages.h"
     "ui_messages.cpp"
+    "ui_styles.h"
+    "ui_styles.cpp"
 )
 
 target_include_directories(uilib PUBLIC

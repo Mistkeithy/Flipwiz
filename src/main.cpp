@@ -1,5 +1,6 @@
 #include "ui_elements.h"
 #include "ui_messages.h"
+#include "ui_styles.h"
 #include <iostream>
 
 int main()
