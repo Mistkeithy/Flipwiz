@@ -191,7 +191,7 @@ void StatusBar::SetText(const std::string& text, int part) {
 }
 
 /// <summary>
-/// ComboBox
+/// Combobox
 /// </summary>
 /// <param name="parent"></param>
 /// <param name="x"></param>
@@ -212,4 +212,73 @@ HWND ComboBox::GetHandle() const {
 
 void ComboBox::AddItem(const std::string& itemText) {
     SendMessage(hWnd, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(itemText.c_str()));
+}
+
+/// <summary>
+/// Textbox
+/// </summary>
+/// <param name="parent"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+/// <param name="multiline"></param>
+TextBox::TextBox(HWND parent, int x, int y, int width, int height, bool multiline) {
+    DWORD windowStyle = WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_AUTOHSCROLL | WS_BORDER;
+    if (multiline) {
+        windowStyle |= ES_MULTILINE | ES_WANTRETURN | ES_AUTOVSCROLL;
+    }
+    hWnd = CreateWindowEx(0, "EDIT", nullptr, windowStyle, x, y, width, height, parent, nullptr, GetModuleHandle(nullptr), nullptr);
+    ApplyDefaultFont(hWnd);
+}
+
+HWND TextBox::GetHandle() const {
+    return hWnd;
+}
+
+/// <summary>
+/// Listview
+/// </summary>
+/// <param name="parent"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+ListView::ListView(HWND parent, int x, int y, int width, int height) {
+    InitCommonControls();
+
+    DWORD windowStyle = WS_CHILD | WS_VISIBLE | WS_TABSTOP | LVS_REPORT;
+    hWnd = CreateWindowEx(0, WC_LISTVIEW, nullptr, windowStyle, x, y, width, height, parent, nullptr, GetModuleHandle(nullptr), nullptr);
+}
+
+HWND ListView::GetHandle() const {
+    return hWnd;
+}
+
+/// <summary>
+/// TabControl
+/// </summary>
+/// <param name="parent"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+TabControl::TabControl(HWND parent, int x, int y, int width, int height, int id) {
+    InitCommonControls();
+
+    DWORD windowStyle = WS_CHILD | WS_VISIBLE | WS_TABSTOP | TCS_TABS;
+    hWnd = CreateWindowEx(0, WC_TABCONTROL, nullptr, windowStyle, x, y, width, height, parent, (HMENU)id, GetModuleHandle(nullptr), nullptr);
+    ApplyDefaultFont(hWnd);
+}
+
+HWND TabControl::GetHandle() const {
+    return hWnd;
+}
+
+void TabControl::AddTab(const std::string& tabText) {
+    TCITEM tci;
+    tci.mask = TCIF_TEXT;
+    tci.pszText = (LPSTR)tabText.c_str();
+
+    TabCtrl_InsertItem(hWnd, TabCtrl_GetItemCount(hWnd), &tci);
 }

@@ -115,4 +115,41 @@ private:
     Label label;
 };
 
+/// <summary>
+/// Textbox class
+/// </summary>
+class TextBox {
+public:
+    TextBox(HWND parent, int x, int y, int width, int height, bool multiline);
+    HWND GetHandle() const;
+
+private:
+    HWND hWnd;
+};
+
+/// <summary>
+/// Listview class
+/// </summary>
+class ListView {
+public:
+    ListView(HWND parent, int x, int y, int width, int height);
+    HWND GetHandle() const;
+
+private:
+    HWND hWnd;
+};
+
+/// <summary>
+/// TabControl class
+/// </summary>
+class TabControl {
+public:
+    TabControl(HWND parent, int x, int y, int width, int height, int id);
+    HWND GetHandle() const;
+    void AddTab(const std::string& tabText);
+
+private:
+    HWND hWnd;
+};
+
 #endif // UI_ELEMENTS_H

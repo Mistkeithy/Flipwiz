@@ -1,6 +1,7 @@
 #include "ui_elements.h"
-#include "ui_messages.h"
+#include "ui_proc.h"
 #include "ui_styles.h"
+#include "ui_set.h"
 #include <iostream>
 
 int main()
@@ -36,11 +37,28 @@ int main()
     // Create Status bar
     StatusBar statusbar(hWnd);
 
+    // Create Textbox
+    TextBox textbox(hWnd, 380, 40, 150, 20, false);
+    TextBox textboxMultiLine(hWnd, 380, 80, 150, 256, true);
+
+    // Create Listview
+    ListView listview(hWnd, 580, 120, 150, 256);
+
+    // Create Tab Control
+    TabControl tabcontrol(hWnd, 150, 10, 200, 22, TABCONTROL_ID);
+    tabcontrol.AddTab("Tab 1");
+    tabcontrol.AddTab("Tab 2");
+    tabcontrol.AddTab("Tab 3");
+    tabcontrol.AddTab("Tab 4");
+    tabcontrol.AddTab("Tab 5");
+
     // Message processor
     MSG msg;
     while (GetMessage(&msg, nullptr, 0, 0)) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        if (!IsDialogMessage(hWnd, &msg)) { // Добавьте эту строку перед TranslateMessage
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
     }
 
     return (int)msg.wParam;
