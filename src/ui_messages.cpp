@@ -26,6 +26,15 @@ LRESULT CALLBACK DefaultWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         // on window create
         break;
     }
+    case WM_CTLCOLORSTATIC:
+    case WM_CTLCOLORBTN:
+    {
+        // set transparent color of elements
+        HDC hdc = (HDC)wParam;
+        SetBkMode(hdc, TRANSPARENT);
+
+        return (INT_PTR)GetSysColorBrush(COLOR_WINDOW);
+    }
     case WM_PAINT: {
         // on window draw
         PAINTSTRUCT ps;

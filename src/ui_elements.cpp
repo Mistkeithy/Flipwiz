@@ -109,7 +109,7 @@ HWND Slider::GetHandle() const {
 /// <param name="width"></param>
 /// <param name="height"></param>
 Label::Label(HWND parent, const std::string& text, int x, int y, int width, int height) {
-    hWnd = CreateWindow("STATIC", text.c_str(), WS_CHILD | WS_VISIBLE | SS_LEFT, 
+    hWnd = CreateWindow("STATIC", text.c_str(), WS_CHILD | WS_VISIBLE | SS_LEFT,
         x, y, width, height, parent, NULL, GetModuleHandle(NULL), NULL);
     ApplyDefaultFont(hWnd);
 }
