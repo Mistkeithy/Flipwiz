@@ -53,6 +53,7 @@ HWND CreateAppWindow(HINSTANCE hInstance, int nCmdShow, const char* windowTitle,
     return hWnd;
 }
 
+
 /// <summary>
 /// Button
 /// </summary>

@@ -3,116 +3,115 @@
 
 #include <windows.h>
 #include <string>
+#include <vector>
+#include <memory>
 
 #define IDI_ICON1 101
 
 HWND CreateAppWindow(HINSTANCE hInstance, int nCmdShow, const char* windowTitle, WNDPROC wndProc);
-
-/// <summary>
-/// Classes
-/// </summary>
-class Button;
-class Slider;
-class Label;
-class CheckBox;
-class Radio;
 
 // UI tweaks
 void ApplyStyle(HWND hWnd, const std::string& styleName);
 void ApplyDefaultFont(HWND hWnd);
 
 /// <summary>
+/// UIElement class
+/// </summary>
+class UIElement {
+public:
+    virtual ~UIElement() = default;
+
+    virtual HWND GetHandle() const = 0;
+
+    // other here
+};
+
+/// <summary>
 /// Button class
 /// </summary>
-class Button {
+class Button : public UIElement {
+    HWND hWnd;
+
 public:
     Button(HWND parent, const std::string& text, int x, int y, int width, int height);
     HWND GetHandle() const;
-
-private:
-    HWND hWnd;
 };
 
 /// <summary>
 /// Slider class
 /// </summary>
-class Slider {
+class Slider : public UIElement {
+    HWND hWnd;
+
 public:
     Slider(HWND parent, int x, int y, int width, int height, int minRange, int maxRange);
     HWND GetHandle() const;
-
-private:
-    HWND hWnd;
 };
 
 /// <summary>
 /// Label class
 /// </summary>
-class Label {
+class Label : public UIElement {
+    HWND hWnd;
+
 public:
     Label(HWND parent, const std::string& text, int x, int y, int width, int height);
     HWND GetHandle() const;
-
-private:
-    HWND hWnd;
 };
 
 /// <summary>
 /// Checkbox class
 /// </summary>
-class CheckBox {
+class CheckBox : public UIElement {
+    HWND hWnd;
+
 public:
     CheckBox(HWND parent, const std::string& text, int x, int y, int width, int height);
     HWND GetHandle() const;
-
-private:
-    HWND hWnd;
 };
 
 /// <summary>
 /// Radio class
 /// </summary>
-class Radio {
+class Radio : public UIElement {
+    HWND hWnd;
+
 public:
     Radio(HWND parent, const std::string& text, int x, int y, int width, int height);
     HWND GetHandle() const;
-
-private:
-    HWND hWnd;
 };
 
 /// <summary>
 /// Scrollbar class
 /// </summary>
-class ScrollBar {
+class ScrollBar : public UIElement {
+    HWND hWnd;
+
 public:
     ScrollBar(HWND parent, bool isHorizontal, int x, int y, int width, int height);
     HWND GetHandle() const;
-
-private:
-    HWND hWnd;
 };
 
 /// <summary>
 /// Statusbar class
 /// </summary>
-class StatusBar {
+class StatusBar : public UIElement {
+    HWND hWnd;
+
 public:
     StatusBar(HWND parent);
     HWND GetHandle() const;
     void SetText(const std::string& text, int part = 0);
-
-private:
-    HWND hWnd;
 };
 
 /// <summary>
 /// ListBox class
 /// </summary>
-class ListBox {
+class ListBox : public UIElement {
+    HWND hWnd;
+
 private:
-    HWND hWnd; // Handle to the ListBox
-    HWND hwndParent; // Parent window
+    HWND hwndParent;
 public:
     ListBox(HWND parent, int x, int y, int width, int height);
     HWND GetHandle() const;
@@ -121,14 +120,15 @@ public:
 /// <summary>
 /// Combobox class
 /// </summary>
-class ComboBox {
+class ComboBox : public UIElement {
+    HWND hWnd;
+
 public:
     ComboBox(HWND parent, int x, int y, int width, int height, bool editable, const std::string& labelText);
     HWND GetHandle() const;
     void AddItem(const std::string& itemText);
 
 private:
-    HWND hWnd;
     Label label;
 };
 
