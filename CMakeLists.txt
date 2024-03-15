@@ -4,8 +4,11 @@ project(flipwiz)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# source code of application
+# source code
 add_subdirectory(src)
+
+# Resources
+file(COPY ${CMAKE_SOURCE_DIR}/res DESTINATION ${CMAKE_BINARY_DIR})
 
 # tests
 #option(BUILD_TESTS "Build unit tests" ON)

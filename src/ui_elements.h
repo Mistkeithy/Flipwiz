@@ -4,6 +4,8 @@
 #include <windows.h>
 #include <string>
 
+#define IDI_ICON1 101
+
 HWND CreateAppWindow(HINSTANCE hInstance, int nCmdShow, const char* windowTitle, WNDPROC wndProc);
 
 /// <summary>

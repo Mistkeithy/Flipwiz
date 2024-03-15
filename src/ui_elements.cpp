@@ -23,7 +23,8 @@ HWND CreateAppWindow(HINSTANCE hInstance, int nCmdShow, const char* windowTitle,
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = nullptr;
     wcex.lpszClassName = windowTitle;
-    wcex.hIconSm = LoadIcon(wcex.hInstance, IDI_APPLICATION);
+    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)); // Загрузка собственной иконки
+    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_ICON1)); // Загрузка собственной маленькой иконки
 
     if (!RegisterClassEx(&wcex)) {
         MessageBox(nullptr, "Call to RegisterClassEx failed!", windowTitle, NULL);
