@@ -35,6 +35,12 @@ int main()
     // Create Status bar
     StatusBar statusbar(hWnd);
 
+    // Create ListBoxû
+    ListBox myListbox(hWnd, 50, 300, 200, 100);
+    SendMessage(myListbox.GetHandle(), LB_ADDSTRING, 0, (LPARAM)"Option 1");
+    SendMessage(myListbox.GetHandle(), LB_ADDSTRING, 0, (LPARAM)"Option 2");
+    SendMessage(myListbox.GetHandle(), LB_ADDSTRING, 0, (LPARAM)"Option 3");
+
     // Message processor
     MSG msg;
     while (GetMessage(&msg, nullptr, 0, 0)) {

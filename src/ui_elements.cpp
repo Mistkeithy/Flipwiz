@@ -192,6 +192,27 @@ void StatusBar::SetText(const std::string& text, int part) {
 }
 
 /// <summary>
+/// ListBox
+/// </summary>
+/// <param name="parent"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+/// <param name="editable"></param>
+ListBox::ListBox(HWND parent, int x, int y, int width, int height) {
+    hwndParent = parent;
+    hWnd = CreateWindowExW(WS_EX_CLIENTEDGE, L"LISTBOX", nullptr,
+        WS_CHILD | WS_VISIBLE | WS_VSCROLL | LBS_NOTIFY,
+        x, y, width, height, parent, nullptr, GetModuleHandle(nullptr), nullptr);
+    ApplyDefaultFont(hWnd);
+}
+
+HWND ListBox::GetHandle() const {
+    return hWnd;
+}
+
+/// <summary>
 /// ComboBox
 /// </summary>
 /// <param name="parent"></param>

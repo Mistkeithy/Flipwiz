@@ -107,6 +107,18 @@ private:
 };
 
 /// <summary>
+/// ListBox class
+/// </summary>
+class ListBox {
+private:
+    HWND hWnd; // Handle to the ListBox
+    HWND hwndParent; // Parent window
+public:
+    ListBox(HWND parent, int x, int y, int width, int height);
+    HWND GetHandle() const;
+};
+
+/// <summary>
 /// Combobox class
 /// </summary>
 class ComboBox {
