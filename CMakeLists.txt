@@ -4,6 +4,9 @@ project(flipwiz)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# set binary directory
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 # source code
 add_subdirectory(src)
 
