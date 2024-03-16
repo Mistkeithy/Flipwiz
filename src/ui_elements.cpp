@@ -23,8 +23,8 @@ HWND CreateAppWindow(HINSTANCE hInstance, int nCmdShow, const char* windowTitle,
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = nullptr;
     wcex.lpszClassName = windowTitle;
-    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)); // Загрузка собственной иконки
-    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_ICON1)); // Загрузка собственной маленькой иконки
+    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
+    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_ICON1));
 
     if (!RegisterClassEx(&wcex)) {
         MessageBox(nullptr, "Call to RegisterClassEx failed!", windowTitle, NULL);
@@ -71,8 +71,15 @@ Button::Button(HWND parent, const std::string& text, int x, int y, int width, in
     ApplyDefaultFont(hWnd);
 }
 
+
 HWND Button::GetHandle() const {
     return hWnd;
+}
+
+Button::~Button() {
+    if (hWnd) {
+        DestroyWindow(hWnd);
+    }
 }
 
 /// <summary
@@ -99,6 +106,12 @@ HWND Slider::GetHandle() const {
     return hWnd;
 }
 
+Slider::~Slider() {
+    if (hWnd) {
+        DestroyWindow(hWnd);
+    }
+}
+
 
 /// <summary>
 /// Label
@@ -117,6 +130,12 @@ Label::Label(HWND parent, const std::string& text, int x, int y, int width, int 
 
 HWND Label::GetHandle() const {
     return hWnd;
+}
+
+Label::~Label() {
+    if (hWnd) {
+        DestroyWindow(hWnd);
+    }
 }
 
 /// <summary>
@@ -138,6 +157,12 @@ HWND CheckBox::GetHandle() const {
     return hWnd;
 }
 
+CheckBox::~CheckBox() {
+    if (hWnd) {
+        DestroyWindow(hWnd);
+    }
+}
+
 /// <summary>
 /// Radio box
 /// </summary>
@@ -155,6 +180,12 @@ Radio::Radio(HWND parent, const std::string& text, int x, int y, int width, int 
 
 HWND Radio::GetHandle() const {
     return hWnd;
+}
+
+Radio::~Radio() {
+    if (hWnd) {
+        DestroyWindow(hWnd);
+    }
 }
 
 /// <summary>
@@ -175,6 +206,12 @@ HWND ScrollBar::GetHandle() const {
     return hWnd;
 }
 
+ScrollBar::~ScrollBar() {
+    if (hWnd) {
+        DestroyWindow(hWnd);
+    }
+}
+
 /// <summary>
 /// Status bar
 /// </summary>
@@ -190,6 +227,12 @@ HWND StatusBar::GetHandle() const {
 
 void StatusBar::SetText(const std::string& text, int part) {
     SendMessage(hWnd, SB_SETTEXT, part, (LPARAM)text.c_str());
+}
+
+StatusBar::~StatusBar() {
+    if (hWnd) {
+        DestroyWindow(hWnd);
+    }
 }
 
 /// <summary>
@@ -211,6 +254,12 @@ ListBox::ListBox(HWND parent, int x, int y, int width, int height) {
 
 HWND ListBox::GetHandle() const {
     return hWnd;
+}
+
+ListBox::~ListBox() {
+    if (hWnd) {
+        DestroyWindow(hWnd);
+    }
 }
 
 /// <summary>
@@ -235,6 +284,115 @@ HWND ComboBox::GetHandle() const {
 
 void ComboBox::AddItem(const std::string& itemText) {
     SendMessage(hWnd, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(itemText.c_str()));
+}
+
+ComboBox::~ComboBox() {
+    if (hWnd) {
+        DestroyWindow(hWnd);
+    }
+}
+
+/// <summary>
+/// Frame
+/// </summary>
+/// <param name="parent"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+/// <param name="type"></param>
+Frame::Frame(HWND parent, int x, int y, int width, int height, FrameType type)
+    : hwndParent(parent), x(x), y(y), width(width), height(height), type(type), hWnd(nullptr) {
+    CreateFrameWindow();
+}
+
+HWND Frame::GetHandle() const {
+    return hWnd;
+}
+
+void Frame::AddControl(std::unique_ptr<UIElement> control) {
+    controls.push_back(std::move(control));
+}
+
+void Frame::SetType(FrameType type) {
+    type = type;
+}
+
+void Frame::CreateFrameWindow() {
+    hWnd = CreateWindowEx(0, WC_STATIC, "", WS_CHILD | WS_VISIBLE | SS_OWNERDRAW,
+        x, y, width, height, hwndParent, nullptr, GetModuleHandle(nullptr), nullptr);
+}
+
+void Frame::ArrangeControls(const ArrangeSettings& settings) {
+    int currentX = settings.startX, currentY = settings.startY;
+    int controlHeight = settings.controlHeight;
+
+    int elementsCounter = 0;
+
+    for (auto& control : controls) {
+        RECT controlRect;
+        GetWindowRect(control->GetHandle(), &controlRect);
+        int controlWidth = controlRect.right - controlRect.left;
+
+        // Adjust width to not exceed the container's width
+        if (controlWidth > settings.containerWidth - 2 * settings.startX) {
+            controlWidth = settings.containerWidth - 2 * settings.startX;
+        }
+
+        switch (settings.direction) {
+        case ArrangeSettings::Direction::Row:
+            // Overlap of frame
+            controlWidth = settings.stretch ? 
+                (settings.containerWidth - settings.startX * 2 - settings.spacing * (settings.elementsPerRow - 1)) / settings.elementsPerRow : controlWidth;
+
+            if (currentX + controlWidth > settings.containerWidth - settings.startX && elementsCounter > 0) {
+                currentX = settings.startX;
+                currentY += controlHeight + settings.spacing;
+                elementsCounter = 0; // Reset counter for new row
+            }
+            break;
+        case ArrangeSettings::Direction::Column:
+            // Overlap of frame
+            controlWidth = settings.stretch ? settings.containerWidth - 2 * settings.startX : controlWidth;
+
+            if (currentY + controlHeight > settings.containerHeight - settings.startY) {
+                //TODO: Handle overflow for column direction
+                break;
+            }
+            break;
+        case ArrangeSettings::Direction::Diagonal:
+            //TODO: Diagonal display
+            break;
+        }
+
+        SetWindowPos(control->GetHandle(), HWND_TOP, currentX, currentY, controlWidth, controlHeight, SWP_NOZORDER);
+
+        switch (settings.direction) {
+        case ArrangeSettings::Direction::Row:
+            currentX += controlWidth + settings.spacing;
+            elementsCounter++;
+            break;
+        case ArrangeSettings::Direction::Column:
+            if (settings.stretch) {
+                // For Column direction when stretch is true, control stretches to full width
+                currentY += controlHeight + settings.spacing;
+            }
+            else {
+                // For Column direction when stretch is false, behave as per existing logic
+                currentY += controlHeight + settings.spacing;
+            }
+            break;
+        }
+    }
+
+    //TODO: Gravity process
+}
+
+
+Frame::~Frame() {
+    if (hWnd) {
+        DestroyWindow(hWnd);
+    }
 }
 
 /// <summary>

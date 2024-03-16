@@ -1,6 +1,7 @@
 #include "ui_elements.h"
 #include "ui_messages.h"
 #include <iostream>
+#include <utility>
 
 int main()
 {
@@ -40,6 +41,37 @@ int main()
     SendMessage(myListbox.GetHandle(), LB_ADDSTRING, 0, (LPARAM)"Option 1");
     SendMessage(myListbox.GetHandle(), LB_ADDSTRING, 0, (LPARAM)"Option 2");
     SendMessage(myListbox.GetHandle(), LB_ADDSTRING, 0, (LPARAM)"Option 3");
+
+    // Create the frame
+    Frame myFrame(hWnd, 400, 0, 300, 300);
+
+    // Create some buttons
+    std::unique_ptr<UIElement> button1 = std::make_unique<Button>(myFrame.GetHandle(), "Button 1", 10, 10, 510, 30);
+    std::unique_ptr<UIElement> button2 = std::make_unique<Button>(myFrame.GetHandle(), "Button 2", 10, 20, 180, 30);
+    std::unique_ptr<UIElement> button3 = std::make_unique<Button>(myFrame.GetHandle(), "Button 3", 10, 30, 230, 30);
+    std::unique_ptr<UIElement> button4 = std::make_unique<Button>(myFrame.GetHandle(), "Button 4", 10, 30, 220, 30);
+    std::unique_ptr<UIElement> button5 = std::make_unique<Button>(myFrame.GetHandle(), "Button 5", 10, 30, 50, 30);
+    std::unique_ptr<UIElement> button6 = std::make_unique<Button>(myFrame.GetHandle(), "Button 6", 10, 30, 100, 50);
+    std::unique_ptr<UIElement> button7 = std::make_unique<Button>(myFrame.GetHandle(), "Button 7", 10, 30, 100, 30);
+
+    // Add the buttons to the frame
+    myFrame.AddControl(std::move(button1));
+    myFrame.AddControl(std::move(button2));
+    myFrame.AddControl(std::move(button3));
+    myFrame.AddControl(std::move(button4));
+    myFrame.AddControl(std::move(button5));
+    myFrame.AddControl(std::move(button6));
+    myFrame.AddControl(std::move(button7));
+
+    // Set the frame params
+    ArrangeSettings settings;
+    settings.direction = ArrangeSettings::Direction::Column;
+    settings.stretch = false;
+    settings.spacing = 10;
+    settings.elementsPerRow = 3;
+
+    // Apply new settings
+    myFrame.ArrangeControls(settings);
 
     // Message processor
     MSG msg;
