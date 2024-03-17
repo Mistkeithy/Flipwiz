@@ -323,45 +323,51 @@ void Frame::CreateFrameWindow() {
         x, y, width, height, hwndParent, nullptr, GetModuleHandle(nullptr), nullptr);
 }
 
+/// <summary>
+/// ArrangeControls
+/// </summary>
+/// <param name="settings"></param>
 void Frame::ArrangeControls(const ArrangeSettings& settings) {
     int currentX = settings.startX, currentY = settings.startY;
-    int controlHeight = settings.controlHeight;
+    int controlHeight;
 
     int elementsCounter = 0;
 
     for (auto& control : controls) {
         RECT controlRect;
         GetWindowRect(control->GetHandle(), &controlRect);
-        int controlWidth = controlRect.right - controlRect.left;
 
-        // Adjust width to not exceed the container's width
-        if (controlWidth > settings.containerWidth - 2 * settings.startX) {
-            controlWidth = settings.containerWidth - 2 * settings.startX;
-        }
+        // Adjust to not exceed the container's width
+        int controlWidth = controlRect.right - controlRect.left > settings.containerWidth - 2 * settings.startX ?
+            settings.containerWidth - 2 * settings.startX : 
+            controlRect.right - controlRect.left, // then use their width
+        controlHeight = controlRect.bottom - controlRect.top > (settings.containerHeight / 4) - 2 * settings.startY ?
+            (settings.containerHeight / 4) - 2 * settings.startY :
+            controlRect.bottom - controlRect.top; // then use their height
 
         switch (settings.direction) {
         case ArrangeSettings::Direction::Row:
-            // Overlap of frame
-            controlWidth = settings.stretch ? 
-                (settings.containerWidth - settings.startX * 2 - settings.spacing * (settings.elementsPerRow - 1)) / settings.elementsPerRow : controlWidth;
+            // Check for overlap of frame
+            controlWidth = settings.stretchWidth ?
+                (settings.containerWidth - settings.startX * 2 - settings.gapX * (settings.elementsPerRow - 1)) / settings.elementsPerRow : controlWidth,
+            controlHeight = settings.stretchHeight ?
+                ((settings.containerHeight / 4) - settings.startY * 2 - settings.gapY) : controlHeight;
 
             if (currentX + controlWidth > settings.containerWidth - settings.startX && elementsCounter > 0) {
                 currentX = settings.startX;
-                currentY += controlHeight + settings.spacing;
+                currentY += controlHeight + settings.gapY;
                 elementsCounter = 0; // Reset counter for new row
             }
             break;
         case ArrangeSettings::Direction::Column:
             // Overlap of frame
-            controlWidth = settings.stretch ? settings.containerWidth - 2 * settings.startX : controlWidth;
+            controlWidth = settings.stretchWidth ? settings.containerWidth - 2 * settings.startX : controlWidth,
+            controlHeight = settings.stretchHeight ? (settings.containerHeight / 5.5) - 2 * settings.startX : controlHeight;
 
             if (currentY + controlHeight > settings.containerHeight - settings.startY) {
                 //TODO: Handle overflow for column direction
                 break;
             }
-            break;
-        case ArrangeSettings::Direction::Diagonal:
-            //TODO: Diagonal display
             break;
         }
 
@@ -369,20 +375,21 @@ void Frame::ArrangeControls(const ArrangeSettings& settings) {
 
         switch (settings.direction) {
         case ArrangeSettings::Direction::Row:
-            currentX += controlWidth + settings.spacing;
+            currentX += controlWidth + settings.gapX;
             elementsCounter++;
             break;
         case ArrangeSettings::Direction::Column:
-            if (settings.stretch) {
+            if (settings.stretchWidth) {
                 // For Column direction when stretch is true, control stretches to full width
-                currentY += controlHeight + settings.spacing;
+                currentY += controlHeight + settings.gapY;
             }
             else {
                 // For Column direction when stretch is false, behave as per existing logic
-                currentY += controlHeight + settings.spacing;
+                currentY += controlHeight + settings.gapY;
             }
             break;
         }
+
     }
 
     //TODO: Gravity process

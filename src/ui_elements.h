@@ -30,10 +30,12 @@ struct ArrangeSettings {
     };
 
     Direction direction;
-    bool stretch;
+    bool stretchWidth;
+    bool stretchHeight;
     int elementsPerRow;
     Gravity gravity;
-    int spacing;
+    int gapX;
+    int gapY;
     int startX;
     int startY;
     int containerWidth;
@@ -41,9 +43,9 @@ struct ArrangeSettings {
     int controlHeight;
 
     ArrangeSettings()
-        : direction(Direction::Column), stretch(false), elementsPerRow(3),
-        gravity(Gravity::TopLeft), spacing(10), startX(10), startY(10),
-        containerWidth(300), containerHeight(300), controlHeight(30) {}
+        : direction(Direction::Column), stretchWidth(false), stretchHeight(false), elementsPerRow(3),
+        gravity(Gravity::TopLeft), gapX(10), gapY(10), startX(10), startY(10),
+        containerWidth(50), containerHeight(50), controlHeight(30) {}
 };
 
 /// <summary>
